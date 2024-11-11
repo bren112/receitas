@@ -1,0 +1,51 @@
+.container{
+    display: flex;
+    justify-content: space-around;
+    margin: 2pc;
+}
+#imgHome{
+    width: 40pc;
+    display: block;
+
+}
+.esq{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+#title_home{
+    font-size: 2.3pc;
+    margin-top: 0pc;
+
+}
+#span_home{
+    color: var(--rosa);
+    font-weight: bolder;
+
+}
+#buttonHome{
+    background-color: var(--rosa);
+    border-radius: 2pc;
+    border: none;
+    width: 15pc;
+    height: 3pc;
+    color: white;
+}
+#imgHomeMobile{
+    width: 20pc;
+    display: none;
+}
+@media (max-width: 768px) {
+    #imgHomeMobile{
+        width: 20pc;
+        display: block;
+    }
+    #imgHome{
+        display: none;
+    }
+    #title_home{
+        font-size: 2pc;
+        margin-top: 4pc;
+    }
+}

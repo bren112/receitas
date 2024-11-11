@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+  font-family: "MuseoModerno", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+    font-weight: 300;
+    font-style: normal;
+}
+:root {
+    --primary: #f0d121;
+    --primary_light: #6b63ff99;
+    --secondary: #000000;
+    --ter: #ffffff;
+    --cinza: #A4A1A1;
+    --cinzaClaro: #D9D9D9;
+    --rosa: #ff6584;
+}
+body{
+  background-color: #ffffff;
+}
+link{
+  text-decoration: none;
+  
+}
+#btnprincipal1{
+  background-color: var(--rosa);
+  color: white;
+}
+#btnprincipal2{
+  background-color: var(--primary);
+  color: white;
+}
+input{
+  width: 15pc;
+}
+:where(.css-dev-only-do-not-override-vryruh).ant-input-affix-wrapper {
+  position: relative;
+  display: inline-flex;
+  width: 85%;
+  min-width: 0;
+  padding: 4px 11px;
+  color: rgb(0 0 0 / 88%);
+  font-size: 14px;
+  line-height: 1.5714285714285714;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
