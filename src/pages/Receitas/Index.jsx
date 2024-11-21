@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from "../../Supabase/createClient.js";
-import { useNavigate } from 'react-router-dom';  // Importa o hook useNavigate
+import { useNavigate } from 'react-router-dom';
 
 function Receitas() {
-    const [user, setUser] = useState(null);  // Estado para armazenar o nome do usuário
-    const [receitas, setReceitas] = useState([]);  // Estado para armazenar as receitas
-    const [loading, setLoading] = useState(true);  // Estado para controlar o carregamento
-    const [error, setError] = useState(null);  // Estado para armazenar erros
-    const [openRecipe, setOpenRecipe] = useState(null); // Estado para controlar qual receita está aberta
-    const navigate = useNavigate(); // Função para navegação
+    const [user, setUser] = useState(null);
+    const [receitas, setReceitas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [openRecipe, setOpenRecipe] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(''); // Estado para o texto de busca
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             const userEmail = localStorage.getItem('user_token');
 
             if (!userEmail) {
-                navigate('/fzrlogin'); // Se não houver usuário logado, redireciona para /fzrlogin
+                navigate('/fzrlogin');
                 return;
             }
 
             try {
-                // Consulta o banco de dados para obter o nome do usuário
                 const { data: userData, error: userError } = await supabase
                     .from('usuarios_receita')
                     .select('nome')
@@ -28,65 +28,80 @@ function Receitas() {
                     .single();
 
                 if (userError) throw userError;
-                setUser(userData.nome);  // Salva o nome do usuário no estado
+                setUser(userData.nome);
             } catch (err) {
-                setError(err.message);  // Em caso de erro, salva a mensagem
+                setError(err.message);
             }
 
             try {
-                // Consulta o banco de dados para obter as receitas
                 const { data: receitasData, error: receitasError } = await supabase
                     .from('receitas')
-                    .select('*');  // Seleciona todas as receitas
+                    .select('*');
 
                 if (receitasError) throw receitasError;
-                setReceitas(receitasData);  // Salva as receitas no estado
+                setReceitas(receitasData);
             } catch (err) {
-                setError(err.message);  // Em caso de erro, salva a mensagem
+                setError(err.message);
             } finally {
-                setLoading(false);  // Finaliza o carregamento
+                setLoading(false);
             }
         };
 
         fetchData();
-    }, [navigate]);  // Dependência para o hook de navegação
+    }, [navigate]);
 
     const toggleRecipe = (id) => {
-        setOpenRecipe(openRecipe === id ? null : id); // Alterna entre abrir e fechar a receita
+        setOpenRecipe(openRecipe === id ? null : id);
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('user_token');  // Remove o token do localStorage
-        setUser(null);  // Limpa o estado do usuário
-        navigate('/fzrlogin'); // Redireciona para a página de login após o logout
+        localStorage.removeItem('user_token');
+        setUser(null);
+        navigate('/fzrlogin');
     };
 
+    // Filtra as receitas com base no texto da busca
+    const filteredReceitas = receitas.filter((receita) =>
+        receita.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        receita.autor.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     if (loading) {
-        return <p style={styles.loading}>Carregando...</p>;  // Exibe "Carregando..." enquanto os dados estão sendo buscados
+        return <p style={styles.loading}>Carregando...</p>;
     }
 
     if (error) {
-        return <p style={styles.error}>Erro: {error}</p>;  // Exibe uma mensagem de erro se houver problemas ao buscar os dados
+        return <p style={styles.error}>Erro: {error}</p>;
     }
 
     return (
         <div style={styles.container}>
             <div style={styles.headerContainer}>
                 {user ? (
-                    <p style={styles.welcome}>Bem-vindo, {user}!</p>  // Exibe o nome do usuário logado
+                    <p style={styles.welcome}>Bem-vindo, {user}!</p>
                 ) : (
-                    <p style={styles.noUser}>Nenhum usuário logado.</p>  // Caso não haja usuário logado
+                    <p style={styles.noUser}>Nenhum usuário logado.</p>
                 )}
 
                 {user && (
-                    <button style={styles.logoutButton} onClick={handleLogout}>Logout</button>  // Botão de logout
+                    <button style={styles.logoutButton} onClick={handleLogout}>Logout</button>
                 )}
             </div>
 
             <h3 style={styles.subHeader}>Receitas disponíveis:</h3>
-            {receitas.length > 0 ? (
+
+            {/* Campo de busca */}
+            <input
+                type="text"
+                placeholder="Buscar por título ou autor"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={styles.searchInput}
+            />
+
+            {filteredReceitas.length > 0 ? (
                 <ul style={styles.recipeList}>
-                    {receitas.map((receita) => (
+                    {filteredReceitas.map((receita) => (
                         <li 
                             key={receita.id} 
                             style={styles.recipeItem}
@@ -99,7 +114,7 @@ function Receitas() {
                                     style={styles.recipeImage}
                                 />
                             )}
-                            <p style={styles.recipeAuthor}><strong>Autor:</strong> {receita.autor}</p>  {/* Exibe o autor da receita */}
+                            <p style={styles.recipeAuthor}><strong>Autor:</strong> {receita.autor}</p>
                             <button
                                 style={styles.toggleButton}
                                 onClick={() => toggleRecipe(receita.id)}
